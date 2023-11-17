@@ -5,13 +5,14 @@ import * as error from '../helpers/errors';
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // @TODO ezt majd validátorba!
     const objectId = new mongoose.Types.ObjectId(req.params.id);
     const producer = await Producer.findById(objectId);
     if (!producer) {
       throw new error.NotFoundError('Producer Not Found.');
     }
     res.locals.data = producer;
-    res.status(200);
+    res.status(200); // @TODO ezt majd process.envből!
     next();
   } catch (error) {
     next(error);
@@ -35,6 +36,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const producer = await updateProducer(req.params.id, { ...req.body, updatedAt: Date.now() });
+    // @TODO ezt majd validátorba!
     if (!producer) {
       throw new error.NotFoundError('Producer Not Found.');
     }

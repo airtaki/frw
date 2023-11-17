@@ -1,4 +1,4 @@
-import { body, param, query, oneOf } from "express-validator";
+import { body, param } from "express-validator";
 
 export const getById = [
   param("id")
@@ -11,20 +11,22 @@ export const create = [
   body("name")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 3, max: 50 }).bail()
+    .isLength({ min: 3, max: 128 }).bail()
     .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
 
   body("country")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 2, max: 50 }).bail()
-    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail()
+    .optional(),
 
   body("region")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 2, max: 50 }).bail()
-    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail()
+    .optional(),
 ];
 
 export const update = [
@@ -36,20 +38,22 @@ export const update = [
   body("name")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 3, max: 50 }).bail()
+    .isLength({ min: 3, max: 128 }).bail()
     .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
 
   body("country")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 2, max: 50 }).bail()
-    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail()
+    .optional(),
 
   body("region")
     .not()
     .isEmpty().bail()
-    .isLength({ min: 2, max: 50 }).bail()
-    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail()
+    .optional(),
 ];
 
 export const remove = [

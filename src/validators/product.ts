@@ -1,0 +1,58 @@
+import { body, param } from "express-validator";
+
+export const getById = [
+  param("id")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail()
+];
+
+export const create = [
+  body("name")
+    .not()
+    .isEmpty().bail()
+    .isLength({ min: 3, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+
+  body("vintage")
+    .not()
+    .isEmpty().bail()
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+
+  body("producerId")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail()
+];
+
+export const update = [
+  param("id")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail(),
+
+  body("name")
+    .not()
+    .isEmpty().bail()
+    .isLength({ min: 3, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+
+  body("vintage")
+    .not()
+    .isEmpty().bail()
+    .isLength({ min: 2, max: 128 }).bail()
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+
+  body("producerId")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail()
+];
+
+export const remove = [
+  param("id")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail()
+];

@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const ProducerSchema = new mongoose.Schema({
+export const ProducerSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  country: { type: String, required: true },
-  region: { type: String, required: true },
+  country: { type: String, required: false },
+  region: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
