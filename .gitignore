@@ -1,0 +1,14 @@
+# VSCode related files
+.vscode/
+
+# node_modules
+node_modules/
+
+# dotenv environment variables files
+.env
+
+# .pem files
+*.pem
+
+# Ignore built ts files
+dist/**/*
