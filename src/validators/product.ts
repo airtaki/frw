@@ -5,6 +5,15 @@ export const getById = [
     .not()
     .isEmpty().bail()
     .isMongoId().bail()
+    // You can add custom validations too, for example check for valid product id in MongoDB.
+];
+
+export const getByProducerId = [
+  param("id")
+    .not()
+    .isEmpty().bail()
+    .isMongoId().bail()
+    // You can add custom validations too, for example check for valid producer id in MongoDB.
 ];
 
 export const create = [
@@ -20,7 +29,7 @@ export const create = [
     .isLength({ min: 2, max: 128 }).bail()
     .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
 
-  body("producerId")
+  body("producer")
     .not()
     .isEmpty().bail()
     .isMongoId().bail()
@@ -44,7 +53,7 @@ export const update = [
     .isLength({ min: 2, max: 128 }).bail()
     .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
 
-  body("producerId")
+  body("producer")
     .not()
     .isEmpty().bail()
     .isMongoId().bail()
