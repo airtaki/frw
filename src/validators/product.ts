@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 export const getById = [
   param("id")
@@ -33,6 +33,13 @@ export const create = [
     .not()
     .isEmpty().bail()
     .isMongoId().bail()
+];
+
+export const createByCsv = [
+  query("url")
+    .not()
+    .isEmpty().bail()
+    .isURL().bail()
 ];
 
 export const update = [

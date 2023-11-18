@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { Product, createProduct, updateProduct, deleteProduct } from '../models/product';
 import { Producer } from "../models/producer";
 import * as error from '../helpers/errors';
+import * as service from '../services/product';
+import { exec, spawn, fork } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -49,6 +53,23 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     }
     res.locals.data = product;
     res.status(201);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createByCsv = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const url = req.query.url as string;
+
+    fork(path.resolve(__dirname + '/../process/csv'), [url], {
+      detached: true,
+      stdio: 'inherit',
+      env: process.env
+    }).unref();
+    res.locals.data = { started: true };
+    res.status(200);
     next();
   } catch (error) {
     next(error);
