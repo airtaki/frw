@@ -13,7 +13,8 @@ mongoose.connection.on("error", (error: Error) => {
   try {
     const url: string = argv[2];
     console.log('Starting to process the given CSV:', url);
-    await parseCsvByUrl(url as string);
+    const result = await parseCsvByUrl(url as string);
+    console.log('RESULT', result);
     process.exit(0);
   } catch (e) {
     console.error('ERROR', e);

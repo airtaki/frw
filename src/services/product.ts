@@ -23,24 +23,22 @@ export const parseCsvByUrl = async (url:string) => {
   try {
     return new Promise((resolve) => {
       https.request(url, async (response) => {
-        response.pipe(parse({ delimiter: ',' }, async (err, data: any[]) => {
+        response.pipe(parse({ delimiter: ',', from_line: 2 }, async (err, data: any[]) => {
           if (err) {
             throw err;
           }
-          // Remove the header row.
-          data.shift();
           resolve(await processCsv(data));
         })).on('error', (error) => {
           throw error;
-        }).on('end', async (z:any) => {
-          console.log('END');
         });
       }).on('error', (error) => {
         throw error;
       }).end();
+    }).then(result => {
+      return result;
     });
   } catch (error) {
-    console.error('ERROR', error);
+    throw error;
   }
 };
 
@@ -74,6 +72,7 @@ const processCsv = async (data: any[]) => {
       console.error('ERROR', error);
     }
   }
+  return 'SUCCESS';
 };
 
 const upsertProducer = async (producer: iProducer) => {

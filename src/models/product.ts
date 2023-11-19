@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-// import { ProducerSchema } from "./producer";
 
 const ProductSchema = new mongoose.Schema({
   vintage: { type: String, required: true },
   name: { type: String, required: true },
-  producer: { type: ObjectId, ref: 'Producer', required: true },
-  // producer: { type: ProducerSchema, required: true },
+  producer: { type: ObjectId, ref: 'Producer', required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
