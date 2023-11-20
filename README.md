@@ -214,7 +214,7 @@ Now the API is ready to handle the requests.
 > ```
 </details>
 
-#### Get a products by producer ID
+#### Get products by producer ID
 <details>
   <summary>
     <code>GET</code>

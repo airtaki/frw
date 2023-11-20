@@ -15,7 +15,13 @@ export const getByProducerId = [
     .not()
     .isEmpty().bail()
     .isMongoId().bail()
-    // You can add custom validations too, for example check for valid producer id in MongoDB.
+    .custom(async (value) => {
+      const producer = await Producer.findById(value);
+      if (!producer) {
+        return Promise.reject('Related Producer Not Found.');
+      }
+      return true;
+    })
 ];
 
 export const create = [
