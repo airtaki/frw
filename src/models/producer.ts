@@ -10,12 +10,42 @@ export const ProducerSchema = new mongoose.Schema({
 
 export const Producer = mongoose.model("Producer", ProducerSchema);
 
-export const getProducerById = async (id: string) => Producer.findById(id);
-export const getProducerByName = async (name: string) => Producer.find({ name: name });
-export const getProducerByCountry = async (country: string) => Producer.find({ country: country });
-
-export const createProducer = async (values: Record<string, any>) => new Producer(values)
-  .save()
-  .then(producer => producer.toObject());
+/**
+ * Insert a new producer or update an existing one.
+ * @param producer the producer to insert or update.
+ * @returns producer.
+ */
+export const upsertProducer = async (producer: Record<string, any>) => {
+  try {
+    return await Producer.findOneAndUpdate({
+      name: producer.name,
+      country: producer.country,
+      region: producer.region,
+    },
+    {
+      ...producer,
+      updatedAt: new Date(),
+    },
+    {
+      new: true,
+      upsert: true
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+  
+/**
+ * Updates an existing producer.
+ * @param id the producer id.
+ * @param values the values to update.
+ * @returns producer.
+ */
 export const updateProducer = async (id: string, values: Record<string, any>) => Producer.findByIdAndUpdate(id, values, { new: true });
-export const deleteProducer = async (id: string) => Producer.findByIdAndDelete(id);
+
+/**
+ * 
+ * @param id the producer id to delete.
+ * @returns deleted count.
+ */
+export const deleteProducer = async (id: string) => Producer.deleteOne({ _id: id });

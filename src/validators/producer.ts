@@ -39,7 +39,8 @@ export const update = [
     .not()
     .isEmpty().bail()
     .isLength({ min: 3, max: 128 }).bail()
-    .isAlphanumeric('en-US', { ignore: '_- ' }).bail(),
+    .isAlphanumeric('en-US', { ignore: '_- ' }).bail()
+    .optional(),
 
   body("country")
     .not()

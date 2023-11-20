@@ -1,8 +1,7 @@
 import { argv } from "process";
-import { parseCsvByUrl } from '../services/product';
+import { parseCsvByUrl } from '../services/process';
 import mongoose from "mongoose";
 
-mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGODB_URI as string);
 mongoose.connection.on("error", (error: Error) => {
   console.error(error);
@@ -16,8 +15,8 @@ mongoose.connection.on("error", (error: Error) => {
     const result = await parseCsvByUrl(url as string);
     console.log('RESULT', result);
     process.exit(0);
-  } catch (e) {
-    console.error('ERROR', e);
+  } catch (error) {
+    console.error('ERROR', error);
     process.exit(1);
   }
 })();

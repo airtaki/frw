@@ -1,16 +1,24 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
-import { Producer, createProducer, updateProducer, deleteProducer } from '../models/producer';
+import { Producer, upsertProducer, updateProducer, deleteProducer } from '../models/producer';
 import * as error from '../helpers/errors';
 
+/**
+ * Gets a single producer by its id.
+ * 
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ * @returns Producer.
+ */
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const objectId = new mongoose.Types.ObjectId(req.params.id);
-    const producer = await Producer.findById(objectId);
+    const producer = await Producer.findById(req.params.id);
     if (!producer) {
+      // If the producer is not found, we throw a 404 error.
       throw new error.NotFoundError('Producer Not Found.');
     }
     res.locals.data = producer;
+    // Status: OK.
     res.status(200);
     next();
   } catch (error) {
@@ -18,13 +26,19 @@ export const getById = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
+/**
+ * Creates a new producer or updates an existing one.
+ * 
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ * @returns procuder.
+ */
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const producer = await createProducer(req.body);
-    if (!producer) {
-      throw new Error('Something went wrong during create producer.');
-    }
-    res.locals.data = producer;
+    // We use upsertProducer to create a new producer or update an existing one.
+    res.locals.data = await upsertProducer(req.body);
+    // Status: Created.
     res.status(201);
     next();
   } catch (error) {
@@ -32,13 +46,18 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+/**
+ * Updates an existing producer.
+ * 
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ * @returns producer.
+ */
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const producer = await updateProducer(req.params.id, { ...req.body, updatedAt: Date.now() });
-    if (!producer) {
-      throw new error.NotFoundError('Producer Not Found.');
-    }
-    res.locals.data = producer;
+    res.locals.data = await updateProducer(req.params.id, req.body);
+    // Status: OK.
     res.status(200);
     next();
   } catch (error) {
@@ -46,10 +65,19 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+/**
+ * Deletes an existing producer.
+ * 
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ * @returns 200 OK.
+ */
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await deleteProducer(req.params.id);
-    res.status(204);
+    res.locals.data = await deleteProducer(req.params.id);
+    // Status: OK.
+    res.status(200);
     next();
   } catch (error) {
     next(error);

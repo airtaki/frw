@@ -1,23 +1,7 @@
 import https from 'https';
 import { parse } from 'csv-parse';
-import { Producer } from '../models/producer';
-import { Product } from '../models/product';
-import { ObjectId } from 'mongodb';
-
-interface iProducer {
-  name: string;
-  country?: string;
-  region?: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-interface iProduct {
-  name: string;
-  vintage: number;
-  producer: ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { upsertProducer } from '../models/producer';
+import { upsertProduct } from '../models/product';
 
 export const parseCsvByUrl = async (url:string) => {
   try {
@@ -44,67 +28,45 @@ export const parseCsvByUrl = async (url:string) => {
 
 const processCsv = async (data: any[]) => {
   for (const row of data) {
+    // Determine the column numbers from the environment variables.
     const producerNameColumn = parseInt(process.env.CSV_PRODUCER_NAME_COLUMN || '2');
     const producerCountryColumn = parseInt(process.env.CSV_PRODUCER_COUNTRY_COLUMN || '3');
     const producerRegionColumn = parseInt(process.env.CSV_PRODUCER_REGION_COLUMN || '4');
     const productNameColumn = parseInt(process.env.CSV_PRODUCT_NAME_COLUMN || '0');
     const productVintageColumn = parseInt(process.env.CSV_PRODUCT_VINTAGE_COLUMN || '1');
+    // This try-catch block is intentionally inside the loop,
+    // because we don't want to break the whole process
+    // if one row is invalid.
     try {
       if (!row[producerNameColumn]) {
         // There is no producer name, so we can't continue with this row.
-        throw new Error('Producer name is missing.');
+        throw new Error('Producer name is missing!');
       }
+      if (!row[productNameColumn]) {
+        // There is no product name, so we can't continue with this row.
+        throw new Error('Product name is missing!');
+      }
+      if (!row[productVintageColumn]) {
+        // There is no product vintage, so we can't continue with this row.
+        throw new Error('Product vintage is missing!');
+      }
+      // Upsert the producer.
       const producer = await upsertProducer({
         name: row[producerNameColumn],
         country: row[producerCountryColumn],
         region: row[producerRegionColumn],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
-      const product = await upsertProduct({
+      // Upsert the product, using the upserted producer's ID.
+      await upsertProduct({
         name: row[productNameColumn],
         vintage: parseInt(row[productVintageColumn]),
         producer: producer._id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
     } catch (error) {
+      // If an error occurs, log it, and continue with the next row.
       console.error('ERROR', error);
+      console.error('ROW', row);
     }
   }
   return 'SUCCESS';
-};
-
-const upsertProducer = async (producer: iProducer) => {
-  try {
-    return await Producer.findOneAndUpdate({
-      name: producer.name,
-      country: producer.country,
-      region: producer.region,
-    },
-    producer,
-    {
-      new: true,
-      upsert: true
-    });
-  } catch (error) {
-    throw error;
-  }
-};
-
-const upsertProduct = async (product: iProduct) => {
-  try {
-    return await Product.findOneAndUpdate({
-      name: product.name,
-      vintage: product.vintage,
-      producer: product.producer,
-    },
-    product,
-    {
-      new: true,
-      upsert: true
-    });
-  } catch (error) {
-    throw error;
-  }
 };
