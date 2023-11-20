@@ -15,7 +15,7 @@ cd frw
 Then, rename or copy the `.env.sample` file to `.env`:
 
 ```bash
-mv .env.sample .env
+mv src/.env.sample src/.env
 ```
 
 Open your favourite editor and edit the `.env` file. You can change the port, the debug mode, the environment etc. as you want, but the default values should work, except one entry. You have to modify the `MONGODB_URI`, based on your own Mongo DB settings:
