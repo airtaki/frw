@@ -28,6 +28,10 @@ export const parseCsvByUrl = async (url:string) => {
 
 const processCsv = async (data: any[]) => {
   for (const row of data) {
+    if (process.env.APP_ENV === 'development') {
+      // In dev mode, we want to show the process on console.
+      console.log('ROW', row);
+    }
     // Determine the column numbers from the environment variables.
     const producerNameColumn = parseInt(process.env.CSV_PRODUCER_NAME_COLUMN || '2');
     const producerCountryColumn = parseInt(process.env.CSV_PRODUCER_COUNTRY_COLUMN || '3');
